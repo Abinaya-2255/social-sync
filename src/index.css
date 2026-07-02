@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #0B0C10;
+  --color-carbon: #1A1C23;
+  --color-matrix: #00D16C;
+  --color-mint-glow: #10B981;
+  --color-platinum: #94A3B8;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-2: #F1F5F9;
+  --border-subtle: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --accent: #00D16C;
+  --chart-green: #059669;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --accent-glow: rgba(16, 185, 129, 0.15);
+  --accent-gradient: linear-gradient(135deg, #00D16C 0%, #10B981 100%);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+}
+
+.dark {
+  --bg-base: #0B0C10;
+  --bg-surface: #1A1C23;
+  --bg-surface-2: #20232C;
+  --border-subtle: #262933;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --accent: #00D16C;
+  --chart-green: #00D16C;
+  --glass-bg: rgba(26, 28, 35, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent-glow: rgba(16, 185, 129, 0.15);
+  --accent-gradient: linear-gradient(135deg, #00D16C 0%, #10B981 100%);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 8px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 40px -4px rgba(0, 0, 0, 0.6), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 350ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#root { min-height: 100vh; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 8px; }
+
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.bg-base { background-color: var(--bg-base); }
+.bg-surface { background-color: var(--bg-surface); }
+.bg-surface-2 { background-color: var(--bg-surface-2); }
+.border-subtle { border-color: var(--border-subtle); }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-accent { color: var(--accent); }
+.bg-accent { background-color: var(--accent); }
+.accent-gradient { background-image: var(--accent-gradient); }
+.shadow-token-sm { box-shadow: var(--shadow-sm); }
+.shadow-token-md { box-shadow: var(--shadow-md); }
+.shadow-token-lg { box-shadow: var(--shadow-lg); }
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
+.bg-radial-glow {
+  background: radial-gradient(circle at 50% 20%, rgba(0, 209, 108, 0.12) 0%, rgba(16, 185, 129, 0.04) 40%, transparent 70%);
+}
+
+.card-glow {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+:root .card-glow:hover {
+  box-shadow: 0 12px 32px rgba(0, 209, 108, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(0, 209, 108, 0.35);
+  border-color: rgba(0, 209, 108, 0.35);
+}
+.dark .card-glow:hover {
+  box-shadow: 0 12px 36px rgba(0, 209, 108, 0.15), 0 0 0 1px rgba(0, 209, 108, 0.4);
+  border-color: rgba(0, 209, 108, 0.4);
+}
+
+/* Seamless infinite ticker animation */
+@keyframes ticker {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker 36s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Subtle ambient floating background movement */
+@keyframes floatSoft {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(12px, -12px) scale(1.03); }
+}
+
+.animate-ambient {
+  animation: floatSoft 14s ease-in-out infinite;
+}
+
+/* Premium GPU-accelerated shimmer animation for Skeleton loaders */
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-surface-2);
+}
+
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+:root .skeleton-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 100%
+  );
+}
+
+/* ─── Premium Subtle Hover Interactions ─── */
+
+/* 1. Interactive Cards */
+.card-glow, .interactive-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+:root .card-glow:hover, :root .interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 209, 108, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(0, 209, 108, 0.3);
+  border-color: rgba(0, 209, 108, 0.3);
+}
+.dark .card-glow:hover, .dark .interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(0, 209, 108, 0.12), 0 0 0 1px rgba(0, 209, 108, 0.35);
+  border-color: rgba(0, 209, 108, 0.35);
+}
+
+/* 2. Interactive Buttons */
+.btn-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.btn-interactive:hover {
+  filter: brightness(1.04);
+}
+.btn-interactive:active {
+  transform: translateY(0.5px) scale(0.98) !important;
+}
+
+/* 3. Sidebar & Navbar NavLinks */
+.sidebar-link {
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding-left 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.sidebar-link:hover {
+  padding-left: 16px !important;
+}
+.sidebar-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 3px;
+  background-color: var(--accent);
+  border-radius: 0 4px 4px 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.sidebar-link-active::after {
+  opacity: 1;
+}
+
+/* 4. Table Rows */
+.table-row-interactive {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.table-row-interactive:hover {
+  background-color: var(--bg-surface-2);
+  transform: scale(1.002);
+  box-shadow: inset 2px 0 0 0 var(--accent);
+}
+
+/* 5. Dropdown Menu Items */
+.dropdown-item-interactive {
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), padding-left 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.dropdown-item-interactive:hover {
+  padding-left: 20px !important;
+  background-color: var(--bg-surface-2) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 6. Form Inputs & Textareas */
+.input-interactive {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease !important;
+}
+.input-interactive:hover {
+  border-color: rgba(0, 209, 108, 0.35) !important;
+}
+.input-interactive:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(0, 209, 108, 0.15) !important;
+  background-color: var(--bg-surface) !important;
+}
+
+/* 7. Calendar Event Cards */
+.calendar-event-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.calendar-event-interactive:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 6px 20px -4px rgba(0, 209, 108, 0.25) !important;
+}
+
+/* 8. Interactive Icons & Icons in Buttons */
+.icon-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.icon-interactive:hover {
+  transform: scale(1.1);
+  color: var(--accent) !important;
+}
+
+/* 9. Accessibility & Clickable Feedback */
+*:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(0, 209, 108, 0.2) !important;
+}
+
+/* Click feedback unified in section 2 */
+
+.animated-link {
+  position: relative;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.animated-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent);
+  transform-origin: bottom right;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.animated-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
+
+
