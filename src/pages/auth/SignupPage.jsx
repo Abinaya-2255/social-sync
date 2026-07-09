@@ -24,9 +24,9 @@ export default function SignupPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      navigate(from, { replace: true })
+      navigate('/app/dashboard', { replace: true })
     }
-  }, [isAuthenticated, authLoading, navigate, from])
+  }, [isAuthenticated, authLoading, navigate])
 
   if (authLoading) {
     return <Loader fullScreen label="Connecting to your workspace..." />
@@ -43,9 +43,14 @@ export default function SignupPage() {
     if (Object.keys(errs).length) { setErrors(errs); return }
     setIsLoading(true)
     try {
-      await signup(form)
-      success('Account created! Welcome to Social Sync.')
-      navigate(from, { replace: true })
+      const res = await signup(form)
+      if (res?.session) {
+        success('Account created! Welcome to Social Sync.')
+        navigate('/app/dashboard', { replace: true })
+      } else {
+        success('Account created! Please check your email to verify your account.')
+        navigate('/auth/login', { replace: true })
+      }
     } catch (err2) {
       error(err2?.message || 'Sign up failed. Please try again.')
     } finally {

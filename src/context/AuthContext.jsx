@@ -104,9 +104,9 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signup = useCallback(async (payload) => {
-    const { user: newUser } = await authService.signup(payload)
-    setUser(newUser)
-    return newUser
+    const result = await authService.signup(payload)
+    setUser(result.user)
+    return result
   }, [])
 
   const logout = useCallback(async () => {

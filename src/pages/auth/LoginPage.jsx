@@ -24,9 +24,9 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      navigate(from, { replace: true })
+      navigate('/app/dashboard', { replace: true })
     }
-  }, [isAuthenticated, authLoading, navigate, from])
+  }, [isAuthenticated, authLoading, navigate])
 
   if (authLoading) {
     return <Loader fullScreen label="Connecting to your workspace..." />
@@ -45,7 +45,7 @@ export default function LoginPage() {
     try {
       await login(form)
       success('Welcome back!')
-      navigate(from, { replace: true })
+      navigate('/app/dashboard', { replace: true })
     } catch (err2) {
       error(err2?.message || 'Login failed. Please try again.')
     } finally {
