@@ -45,6 +45,7 @@ export default function LoginPage() {
     try {
       await login(form)
       success('Welcome back!')
+      navigate(from, { replace: true })
     } catch (err2) {
       error(err2?.message || 'Login failed. Please try again.')
     } finally {

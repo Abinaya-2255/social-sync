@@ -2,14 +2,6 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { authService, mapSupabaseUser } from '../services/modules/authService.js'
 import { supabase } from '../lib/supabaseClient.js'
 
-// Evaluate hash synchronously at module load time before Supabase Client initialization strips it
-const hasHash = typeof window !== 'undefined' && (
-  window.location.hash.includes('access_token') ||
-  window.location.hash.includes('id_token') ||
-  window.location.hash.includes('refresh_token') ||
-  window.location.search.includes('code=')
-)
-
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
@@ -18,6 +10,10 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let isMounted = true
+    const hasHash = window.location.hash.includes('access_token') ||
+                    window.location.hash.includes('id_token') ||
+                    window.location.hash.includes('refresh_token') ||
+                    window.location.search.includes('code=')
 
     // If we detect an OAuth redirect callback, keep isLoading = true
     if (hasHash) {
@@ -102,11 +98,15 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (credentials) => {
-    return await authService.login(credentials)
+    const { user: loggedInUser } = await authService.login(credentials)
+    setUser(loggedInUser)
+    return loggedInUser
   }, [])
 
   const signup = useCallback(async (payload) => {
-    return await authService.signup(payload)
+    const { user: newUser } = await authService.signup(payload)
+    setUser(newUser)
+    return newUser
   }, [])
 
   const logout = useCallback(async () => {
