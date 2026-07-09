@@ -8,9 +8,11 @@ import {
   CheckCircle2, Star, Globe
 } from 'lucide-react'
 import Button from '../../components/ui/Button.jsx'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import InfiniteTicker from '../../components/ui/InfiniteTicker.jsx'
 import AnimatedCounter from '../../components/ui/AnimatedCounter.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
+import Loader from '../../components/ui/Loader.jsx'
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
@@ -241,6 +243,17 @@ const FAQS = [
 ]
 
 export default function LandingPage() {
+  console.log("LANDING PAGE RENDERED")
+  const { isAuthenticated, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <Loader fullScreen label="Loading Social Sync..." />
+  }
+
+  if (isAuthenticated) {
+    return <Navigate replace to="/app/dashboard" />
+  }
+
   return (
     <div className="overflow-hidden">
       {/* Hero */}

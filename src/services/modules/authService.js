@@ -1,61 +1,67 @@
-import { axiosClient, USE_MOCKS } from '../api/axiosClient.js'
-import { ENDPOINTS } from '../api/endpoints.js'
-import { delay } from '../mocks/mockUtils.js'
-import { mockUser } from '../mocks/userMocks.js'
+import { supabase } from '../../lib/supabaseClient.js'
+
+export const mapSupabaseUser = (sbUser) => {
+  if (!sbUser) return null
+  return {
+    id: sbUser.id,
+    email: sbUser.email,
+    name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || sbUser.email?.split('@')[0] || 'User',
+    avatar: sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.avatar || null,
+    role: sbUser.user_metadata?.role || 'Owner',
+    company: sbUser.user_metadata?.company || 'Reyes Creative Studio',
+    timezone: sbUser.user_metadata?.timezone || 'America/New_York',
+    language: sbUser.user_metadata?.language || 'English (US)',
+  }
+}
 
 export const authService = {
   async login({ email, password }) {
-    if (USE_MOCKS) {
-      await delay(600)
-      if (!email || !password) throw { message: 'Invalid credentials', code: 'AUTH_INVALID', status: 401 }
-      const token = 'mock_token_' + Date.now()
-      localStorage.setItem('ss_token', token)
-      return { user: mockUser, token }
-    }
-    const { data } = await axiosClient.post(ENDPOINTS.auth.login, { email, password })
-    localStorage.setItem('ss_token', data.token)
-    return data
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return { user: mapSupabaseUser(data.user), session: data.session }
   },
 
   async signup({ name, email, password }) {
-    if (USE_MOCKS) {
-      await delay(700)
-      const token = 'mock_token_' + Date.now()
-      localStorage.setItem('ss_token', token)
-      return { user: { ...mockUser, name, email }, token }
-    }
-    const { data } = await axiosClient.post(ENDPOINTS.auth.signup, { name, email, password })
-    localStorage.setItem('ss_token', data.token)
-    return data
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    })
+    if (error) throw error
+    return { user: mapSupabaseUser(data.user), session: data.session }
   },
 
   async forgotPassword({ email }) {
-    if (USE_MOCKS) {
-      await delay(600)
-      return { message: `Password reset instructions sent to ${email}` }
-    }
-    const { data } = await axiosClient.post(ENDPOINTS.auth.forgotPassword, { email })
-    return data
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/app/dashboard`
+    })
+    if (error) throw error
+    return { success: true }
   },
 
   async logout() {
-    localStorage.removeItem('ss_token')
-    if (USE_MOCKS) {
-      await delay(200)
-      return { success: true }
-    }
-    const { data } = await axiosClient.post(ENDPOINTS.auth.logout)
-    return data
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+    return { success: true }
   },
 
   async getSession() {
-    const token = localStorage.getItem('ss_token')
-    if (!token) return null
-    if (USE_MOCKS) {
-      await delay(300)
-      return { user: mockUser, token }
-    }
-    const { data } = await axiosClient.get(ENDPOINTS.users.me)
-    return { user: data, token }
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error || !session) return null
+    return { user: mapSupabaseUser(session.user), session }
   },
+
+  async signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/login`
+      }
+    })
+    if (error) throw error
+  }
 }

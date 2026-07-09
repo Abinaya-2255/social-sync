@@ -1,33 +1,28 @@
-import { axiosClient, USE_MOCKS } from '../api/axiosClient.js'
-import { ENDPOINTS } from '../api/endpoints.js'
-import { delay } from '../mocks/mockUtils.js'
-import { mockUser } from '../mocks/userMocks.js'
+import { supabase } from '../../lib/supabaseClient.js'
+import { mapSupabaseUser } from './authService.js'
 
 export const userService = {
   async getProfile() {
-    if (USE_MOCKS) {
-      await delay(300)
-      return mockUser
-    }
-    const { data } = await axiosClient.get(ENDPOINTS.users.me)
-    return data
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error) throw error
+    return mapSupabaseUser(user)
   },
 
   async updateProfile(payload) {
-    if (USE_MOCKS) {
-      await delay(500)
-      return { ...mockUser, ...payload }
-    }
-    const { data } = await axiosClient.put(ENDPOINTS.users.updateProfile, payload)
-    return data
+    const { data: { user }, error } = await supabase.auth.updateUser({
+      data: {
+        full_name: payload.name,
+        company: payload.company,
+        timezone: payload.timezone,
+      }
+    })
+    if (error) throw error
+    return mapSupabaseUser(user)
   },
 
-  async changePassword(payload) {
-    if (USE_MOCKS) {
-      await delay(500)
-      return { success: true }
-    }
-    const { data } = await axiosClient.put(ENDPOINTS.users.changePassword, payload)
-    return data
+  async changePassword({ password }) {
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) throw error
+    return { success: true }
   },
 }

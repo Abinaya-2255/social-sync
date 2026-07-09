@@ -15,7 +15,7 @@ export default function ProfileMenu() {
 
   const handleLogout = async () => {
     await logout()
-    navigate('/auth/login')
+    navigate('/', { replace: true })
   }
 
   if (!user) return null

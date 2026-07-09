@@ -49,7 +49,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     await logout()
-    navigate('/auth/login')
+    navigate('/', { replace: true })
   }
 
   return (
