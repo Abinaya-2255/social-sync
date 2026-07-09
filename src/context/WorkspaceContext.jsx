@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { workspaceService } from '../services/modules/workspaceService.js'
+import { useAuth } from './AuthContext.jsx'
 
 const WorkspaceContext = createContext(null)
 
@@ -7,16 +8,31 @@ export function WorkspaceProvider({ children }) {
   const [workspaces, setWorkspaces] = useState([])
   const [activeWorkspace, setActiveWorkspace] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
-    workspaceService.list().then((list) => {
-      setWorkspaces(list)
-      const active = list.find((w) => w.active) || list[0]
-      setActiveWorkspace(active)
-      if (active) localStorage.setItem('ss_active_workspace', active.id)
+    if (!isAuthenticated) {
+      setWorkspaces([])
+      setActiveWorkspace(null)
       setIsLoading(false)
-    })
-  }, [])
+      return
+    }
+
+    setIsLoading(true)
+    workspaceService.list()
+      .then((list) => {
+        setWorkspaces(list)
+        const active = list.find((w) => w.active) || list[0]
+        setActiveWorkspace(active)
+        if (active) localStorage.setItem('ss_active_workspace', active.id)
+      })
+      .catch((err) => {
+        console.error('Failed to load workspaces:', err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [isAuthenticated])
 
   const switchWorkspace = useCallback(async (id) => {
     const ws = await workspaceService.switchTo(id)

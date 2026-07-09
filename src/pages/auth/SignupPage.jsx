@@ -43,9 +43,12 @@ export default function SignupPage() {
     if (Object.keys(errs).length) { setErrors(errs); return }
     setIsLoading(true)
     try {
-      await signup(form)
-      success('Account created! Welcome to Social Sync.')
-      navigate(from, { replace: true })
+      const res = await signup(form)
+      if (res?.session) {
+        success('Account created! Welcome to Social Sync.')
+      } else {
+        success('Account created! Please check your inbox to confirm your email.')
+      }
     } catch (err2) {
       error(err2?.message || 'Sign up failed. Please try again.')
     } finally {
