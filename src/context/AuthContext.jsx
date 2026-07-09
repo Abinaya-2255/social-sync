@@ -23,10 +23,11 @@ export function AuthProvider({ children }) {
     // 1. Check initial session
     supabase.auth.getSession()
       .then(({ data: { session }, error }) => {
-        if (error) console.error('Error fetching session:', error)
+        if (error) console.error('[AuthContext] Error fetching initial session:', error)
         if (isMounted) {
           if (session) {
             setUser(mapSupabaseUser(session.user))
+            localStorage.setItem('ss_token', session.access_token)
           }
           // Only turn off loading if we are NOT in an OAuth callback flow.
           // In an OAuth flow, we wait for onAuthStateChange to deliver the SIGNED_IN event.
@@ -36,7 +37,7 @@ export function AuthProvider({ children }) {
         }
       })
       .catch((err) => {
-        console.error('Error checking initial session:', err)
+        console.error('[AuthContext] Catch in initial session check:', err)
         if (isMounted && !hasHash) {
           setIsLoading(false)
         }
@@ -45,6 +46,11 @@ export function AuthProvider({ children }) {
     // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
+
+      // Eagerly ignore initial null state if we are in the middle of OAuth parsing
+      if (event === 'INITIAL_SESSION' && !session && hasHash) {
+        return
+      }
 
       const mappedUser = mapSupabaseUser(session?.user ?? null)
       setUser(mappedUser)

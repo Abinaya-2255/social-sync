@@ -21,9 +21,7 @@ export default function PublicLayout() {
   const navigate = useNavigate()
   const { isAuthenticated, isLoading } = useAuth()
 
-  console.log("PUBLIC LAYOUT")
-  console.log(isAuthenticated)
-  console.log(isLoading)
+
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && window.location.pathname === '/') {

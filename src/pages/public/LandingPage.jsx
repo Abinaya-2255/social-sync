@@ -243,7 +243,6 @@ const FAQS = [
 ]
 
 export default function LandingPage() {
-  console.log("LANDING PAGE RENDERED")
   const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
