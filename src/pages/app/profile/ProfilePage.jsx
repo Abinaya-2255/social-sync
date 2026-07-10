@@ -48,12 +48,10 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
-    try {
-      await logout()
-    } finally {
-      setIsLoggingOut(false)
-      navigate('/', { replace: true })
-    }
+    // Navigate away from the protected route BEFORE clearing auth state.
+    navigate('/', { replace: true })
+    await logout()
+    setIsLoggingOut(false)
   }
 
   return (

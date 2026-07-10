@@ -14,11 +14,11 @@ export default function ProfileMenu() {
   useOutsideClick(ref, () => setOpen(false), open)
 
   const handleLogout = async () => {
-    try {
-      await logout()
-    } finally {
-      navigate('/', { replace: true })
-    }
+    // Navigate away from the protected route FIRST, before clearing auth state.
+    // If we clear state first, RequireAuth re-renders with isAuthenticated=false
+    // and fires <Navigate to="/auth/login"> before our navigate('/') runs.
+    navigate('/', { replace: true })
+    await logout()
   }
 
   if (!user) return null

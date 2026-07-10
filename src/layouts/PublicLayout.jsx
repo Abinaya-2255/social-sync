@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { APP_NAME } from '../lib/constants.js'
 import ThemeToggle from '../components/ui/ThemeToggle.jsx'
-import Button from '../components/ui/Button.jsx'
 import BrandLogo from '../components/ui/BrandLogo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import Loader from '../components/ui/Loader.jsx'
@@ -54,12 +53,18 @@ export default function PublicLayout() {
 
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={() => navigate('/auth/login')}>
+            <Link
+              to="/auth/login"
+              className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xl text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
+            >
               Log in
-            </Button>
-            <Button size="sm" onClick={() => navigate('/auth/signup')}>
+            </Link>
+            <Link
+              to="/auth/signup"
+              className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors"
+            >
               Get Started
-            </Button>
+            </Link>
           </div>
 
           <button
@@ -84,12 +89,20 @@ export default function PublicLayout() {
               </NavLink>
             ))}
             <div className="flex items-center gap-3 pt-2">
-              <Button variant="ghost" size="sm" className="flex-1" onClick={() => navigate('/auth/login')}>
+              <Link
+                to="/auth/login"
+                className="flex-1 inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xl text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
                 Log in
-              </Button>
-              <Button size="sm" className="flex-1" onClick={() => navigate('/auth/signup')}>
+              </Link>
+              <Link
+                to="/auth/signup"
+                className="flex-1 inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
                 Get Started
-              </Button>
+              </Link>
             </div>
           </div>
         )}
