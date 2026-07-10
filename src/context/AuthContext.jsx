@@ -110,8 +110,18 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
-    await authService.logout()
-    setUser(null)
+    try {
+      await authService.logout()
+    } catch (err) {
+      // Even if the server-side signOut fails (e.g. expired token),
+      // we still clear the local session so the user is logged out client-side.
+      console.error('[AuthContext] signOut error (clearing local session anyway):', err)
+    } finally {
+      // Always clear user state and all auth-related storage keys
+      setUser(null)
+      localStorage.removeItem('ss_token')
+      localStorage.removeItem('ss_active_workspace')
+    }
   }, [])
 
   const loginWithGoogle = useCallback(async () => {
@@ -119,9 +129,6 @@ export function AuthProvider({ children }) {
   }, [])
 
   const isAuthenticated = !!user
-  console.log("AUTH USER", user)
-  console.log("AUTH", isAuthenticated)
-  console.log("LOADING", isLoading)
 
   return (
     <AuthContext.Provider

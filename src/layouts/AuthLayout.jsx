@@ -1,9 +1,23 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, Navigate } from 'react-router-dom'
 import { APP_TAGLINE } from '../lib/constants.js'
 import ThemeToggle from '../components/ui/ThemeToggle.jsx'
 import BrandLogo from '../components/ui/BrandLogo.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
+import Loader from '../components/ui/Loader.jsx'
 
 export default function AuthLayout() {
+  const { isAuthenticated, isLoading } = useAuth()
+
+  // While auth state is resolving, show a loading screen
+  if (isLoading) {
+    return <Loader fullScreen label="Connecting to your workspace..." />
+  }
+
+  // Authenticated users should never be on login / signup / forgot-password
+  if (isAuthenticated) {
+    return <Navigate replace to="/app/dashboard" />
+  }
+
   return (
     <div className="min-h-screen flex bg-base">
       <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16">

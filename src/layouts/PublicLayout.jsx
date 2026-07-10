@@ -1,5 +1,5 @@
-import { Link, NavLink, Outlet, useNavigate, Navigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { Link, NavLink, Outlet, Navigate, useLocation } from 'react-router-dom'
+import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { APP_NAME } from '../lib/constants.js'
 import ThemeToggle from '../components/ui/ThemeToggle.jsx'
@@ -18,22 +18,15 @@ const LINKS = [
 
 export default function PublicLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const navigate = useNavigate()
   const { isAuthenticated, isLoading } = useAuth()
+  useLocation() // keep the component reactive to route changes
 
-
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated && window.location.pathname === '/') {
-      navigate('/app/dashboard', { replace: true })
-    }
-  }, [isAuthenticated, isLoading, navigate])
-
+  // Redirect authenticated users away from ALL public routes
   if (isLoading) {
     return <Loader fullScreen label="Loading Social Sync..." />
   }
 
-  if (isAuthenticated && window.location.pathname === '/') {
+  if (isAuthenticated) {
     return <Navigate replace to="/app/dashboard" />
   }
 

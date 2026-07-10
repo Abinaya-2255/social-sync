@@ -14,8 +14,11 @@ export default function ProfileMenu() {
   useOutsideClick(ref, () => setOpen(false), open)
 
   const handleLogout = async () => {
-    await logout()
-    navigate('/', { replace: true })
+    try {
+      await logout()
+    } finally {
+      navigate('/', { replace: true })
+    }
   }
 
   if (!user) return null

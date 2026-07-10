@@ -48,8 +48,12 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
-    await logout()
-    navigate('/', { replace: true })
+    try {
+      await logout()
+    } finally {
+      setIsLoggingOut(false)
+      navigate('/', { replace: true })
+    }
   }
 
   return (
